@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Get target dir
+DIR="$1"
+if [ "$DIR" != "" ] && [[ ! -d "$DIR" ]]
+then
+	echo "Target not found: $DIR"
+	exit 1
+fi
+
+# Move into dir
+[ "$DIR" != "" ] && pushd "$DIR" > /dev/null
+
+# Get dir stats 
+sudo du -xP -d1 -BM 2>/dev/null | sort -nk1 | tail -n 20
+
+# Move out of dir
+[ "$DIR" != "" ] && popd "$DIR" > /dev/null

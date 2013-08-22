@@ -1,0 +1,46 @@
+#!/bin/bash
+
+OIFS="$IFS"
+IFS=$(echo -ne "\t")
+trap 'IFS=$OIFS' exit
+
+# Get divisor
+FLAG="$1"
+DIVISOR=
+if [ "$FLAG" == "-k" ]
+then DIVISOR=/1024
+elif [ "$FLAG" == "-m" ]
+then DIVISOR=/1048576
+elif [ "$FLAG" == "-g" ]
+then DIVISOR=/$((1048576*1024))
+else FLAG=
+fi
+
+# Set number of decimal places
+if [ "$DIVISOR" == "" ]
+then SCALE=0
+else SCALE=2
+fi
+
+# Get file array
+FILES="${files[@]}"
+
+# Get files from parameter if no array found
+if [ "$FILES" == "" ]
+then
+	if [ "$FLAG" == "" ] && [ "$1" != "" ] && [ -d "$1" ] && [ "$2" == "" ]
+	then FILESPEC=$1
+	elif [ "$2" != "" ] && [ -d "$2" ] && [ "$3" == "" ]
+	then FILESPEC=$2
+	else FILESPEC=./
+	fi
+	FILES=$(find "$FILESPEC" | tr '\n' '\t')
+fi
+
+# Parse file list
+TOTAL=0
+for FILE in $FILES
+do
+	TOTAL=$(echo "$TOTAL + $(stat -tc %s $FILE)" | bc)
+done
+echo $TOTAL | awk '{ print "scale='$SCALE'; (" $1 ")'$DIVISOR'"; }' | bc
