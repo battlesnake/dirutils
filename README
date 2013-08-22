@@ -1,0 +1,22 @@
+Title: 	dirutils
+
+Description:
+	Bash scripts for analysing directories
+
+Author:
+	Mark K Cowan, mark@battlesnake.co.uk
+
+Requires:
+	Bash, bc, awk, du, other things that come with a base installation
+
+Descriptions:
+	dirsize [ { -k | -m | -g } ] [ dirname ]
+		Calculates the total size of files in <dirname> or the current
+		directory, and outputs in bytes unless any of the size
+		specifiers are given.
+		
+	dirstats [ dirname ]
+		Prints a list of the 20 largest subdirectories in <dirname> or
+		the current directory, ranked in descending order of size, with
+		their corresponding sizes in the first column.  Does not follow
+		symlinks or mounts to other file systems.
